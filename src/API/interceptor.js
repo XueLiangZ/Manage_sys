@@ -1,5 +1,9 @@
 import axios from "axios";
 
+let Request = axios.create({
+  baseURL: "http://127.0.0.1:8888/api/private/v1",
+  
+});
 axios.interceptors.request.use(
   function(config) {
     config.baseURL = "http://127.0.0.1:8888/api/private/v1";

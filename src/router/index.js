@@ -37,13 +37,11 @@ const routes = [
         path: "/roles",
         name: "roles",
         component: () => import("../components/rights/roles.vue")
-        // children: [
-        //   {
-        //     path: "/roles",
-        //     name: "roles",
-        //     component: () => import("../components/roles.vue")
-        //   }
-        // ]
+      },
+      {
+        path: "/rights",
+        name: "rights",
+        component: () => import("../components/rights/rights.vue")
       }
     ]
   }

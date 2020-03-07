@@ -105,7 +105,13 @@
       </el-pagination>
     </el-card>
     <!-- 增加用户 dialog -->
-    <el-dialog title="添加用户" :visible="isShowDialog" width="40%">
+    <el-dialog
+      title="添加用户"
+      :visible="isShowDialog"
+      width="40%"
+      :show-close="false"
+      :destroy-on-close="true"
+    >
       <el-form
         :model="addFormData"
         :rules="addRules"
@@ -274,12 +280,11 @@ export default {
     //改变用户状态
     async uStateChange(user) {
       //调用接口
-      const { data: res } = await this.$http.userstate({
+      const { data } = await this.$http.userstate({
         uId: user.id,
         type: user.mg_state
       });
-      // console.log(res)
-      if (res.meta.status == 200) {
+      if (data.meta.status == 200) {
         return this.$message.success("修改用户状态成功");
       } else {
         return this.$message.error("修改用户状态失败");
@@ -317,8 +322,11 @@ export default {
     },
 
     editHandel(data) {
-      this.editFormData = data;
-      // console.log(data);
+      for (let prop in this.editFormData) {
+        this.editFormData[prop] = data[prop];
+      }
+        // this.editFormData = data;
+
       this.isShowEditForm = true;
     },
     //编辑用户
@@ -327,17 +335,16 @@ export default {
       this.$refs["editFormRef"].validate(async valid => {
         if (valid) {
           const { data: res } = await this.$http.edituser(this.editFormData);
-          // console.log(res);
           if (res.meta.status == 200) {
             //重新获取用户数据列表
             this.getUserList();
-
+            //清空表单校验结果
             this.$refs["editFormRef"].clearValidate();
             this.isShowEditForm = false;
 
-            return this.$message.success(res.meta.msg);
+            this.$message.success(res.meta.msg);
           } else {
-            return this.$message.error(res.meta.msg);
+            this.$message.error(res.meta.msg);
           }
         }
       });
@@ -354,12 +361,13 @@ export default {
     async deleteHandel(id) {
       //等待用户确认删除信息
       const result = await this.$messageBox
-        .confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      //确认返回 'confirm'
+        .confirm("此操作将永久删除该用户, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
-        .catch(res => res);
+        .catch(res => res);// 取消返回'cancel'
 
       if (result == "confirm") {
         //用户确认删除

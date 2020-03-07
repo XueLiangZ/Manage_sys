@@ -88,6 +88,7 @@ export default {
     //获取列表信息;
     async getList() {
       const { data: res } = await this.$http.getMenuList();
+      console.log(res)
       if (res.meta.status == 200) {
         this.menuData = res.data;
         // console.log(res.data);
@@ -99,7 +100,6 @@ export default {
     },
     //  更新当前激活的导航项,显示样式
     changeActiveNavStates(){
-      console.log(this.$route.path)
       this.activeNavState = this.$route.path;
     }
   }
