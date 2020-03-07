@@ -7,12 +7,14 @@
       <el-breadcrumb-item>权限列表</el-breadcrumb-item>
     </el-breadcrumb>
 
+    <!-- 卡片区域 -->
     <el-card class="card-box">
       <el-table height="80vh" :data="rightsData" :border="true" :stripe="true">
         <el-table-column type="index" label="#"> </el-table-column>
         <el-table-column prop="authName" label="权限管理"></el-table-column>
         <el-table-column prop="path" label="路径"></el-table-column>
-        <el-table-column prop="level" label="路径">
+        <el-table-column prop="level" label="权限等级
+        ">
           <template slot-scope="data">
             <el-tag type="success" v-if="data.row.level === '0'">一级</el-tag>
             <el-tag type="warning" v-else-if="data.row.level === '1'"
@@ -33,14 +35,18 @@ export default {
   },
   data() {
     return {
+      //权限列表数据
       rightsData: []
     };
   },
   methods: {
+      //获取权限列表数据
+
     async getRightsList() {
       const { data: res } = await this.$http.rightslist("list");
       console.log(res);
       if (res.meta.status == 200) {
+
         this.rightsData = res.data;
       } else {
         this.$message.info(res.meta.msg);
