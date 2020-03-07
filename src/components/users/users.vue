@@ -260,7 +260,6 @@ export default {
 
       if (res.meta.status == 200) {
         this.userData = res.data;
-        console.log(res.data);
       } else {
         this.$message.error("获取用户信息失败");
       }
