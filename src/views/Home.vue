@@ -11,7 +11,7 @@
     </el-header>
     <el-container>
       <!-- 左边树形栏 -->
-      <el-aside :width="isCollapse ? '64px':'200px'">
+      <el-aside :width="isCollapse ? '64px' : '200px'">
         <!-- 折叠按钮 -->
         <div class="btn-collpase" @click="changeCollpase">||||</div>
         <!-- 树形菜单 -->
@@ -22,8 +22,8 @@
           :unique-opened="true"
           :collapse="isCollapse"
           :collapse-transition="false"
-          :router='true'
-          :default-active ="activeNavState"
+          :router="true"
+          :default-active="activeNavState"
         >
           <!-- 一级菜单  -->
           <el-submenu
@@ -37,7 +37,7 @@
             </template>
             <!--  二级菜单  -->
             <el-menu-item
-              :index="'/'+child.path"
+              :index="'/' + child.path"
               v-for="child in item.children"
               :key="child.id"
               @click="changeActiveNavStates()"
@@ -74,7 +74,7 @@ export default {
         "145": "icon-baobiao"
       },
       isCollapse: false,
-      activeNavState: '',
+      activeNavState: ""
     };
   },
   methods: {
@@ -88,7 +88,6 @@ export default {
     //获取列表信息;
     async getList() {
       const { data: res } = await this.$http.getMenuList();
-      console.log(res)
       if (res.meta.status == 200) {
         this.menuData = res.data;
         // console.log(res.data);
@@ -99,7 +98,7 @@ export default {
       this.isCollapse = !this.isCollapse;
     },
     //  更新当前激活的导航项,显示样式
-    changeActiveNavStates(){
+    changeActiveNavStates() {
       this.activeNavState = this.$route.path;
     }
   }
@@ -160,8 +159,8 @@ export default {
   color: aliceblue;
   text-align: center;
   cursor: pointer;
-  }
-.btn-collpase:hover{
+}
+.btn-collpase:hover {
   color: orangered;
 }
 </style>

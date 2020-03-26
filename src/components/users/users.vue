@@ -20,29 +20,17 @@
             placeholder="请输入内容"
             @clear="getUserList"
           >
-            <el-button
-              slot="append"
-              size="small"
-              icon="el-icon-search"
-              @click="getUserList"
-            ></el-button>
+            <el-button slot="append" size="small" icon="el-icon-search" @click="getUserList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="3">
-          <el-button type="primary" size="small" @click="isShowDialog = true"
-            >添加用户</el-button
-          >
+          <el-button type="primary" size="small" @click="isShowDialog = true">添加用户</el-button>
         </el-col>
       </el-row>
 
       <!-- 表格区域 -->
-      <el-table
-        :data="userData.users"
-        style="width: 100%"
-        :stripe="true"
-        :border="true"
-      >
-        <el-table-column type="index" label=""> </el-table-column>
+      <el-table :data="userData.users" style="width: 100%" :stripe="true" :border="true">
+        <el-table-column type="index" label></el-table-column>
         <el-table-column prop="username" label="姓名"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
         <el-table-column prop="mobile" label="电话"></el-table-column>
@@ -55,20 +43,14 @@
               active-color="#13ce66"
               inactive-color="#ff4949"
               @change="uStateChange(data.row)"
-            >
-            </el-switch>
+            ></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
           <!-- 作用域插槽   操作按钮列 -->
           <template slot-scope="data">
             <!-- 编辑 -->
-            <el-button
-              type="primary"
-              icon="el-icon-edit"
-              size="mini"
-              @click="editHandel(data.row)"
-            ></el-button>
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="editHandel(data.row)"></el-button>
             <!-- 删除 -->
             <el-button
               type="danger"
@@ -76,17 +58,13 @@
               size="mini"
               @click="deleteHandel(data.row.id)"
             ></el-button>
-            <el-tooltip
-              effect="dark"
-              content="分配角色"
-              placement="top-end"
-              :enterable="false"
-            >
+            <el-tooltip effect="dark" content="分配角色" placement="top-end" :enterable="false">
               <!-- 分配角色 -->
               <el-button
                 type="warning"
                 icon="el-icon-s-tools"
                 size="mini"
+                @click="setRolebtn(data.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -101,8 +79,7 @@
         :page-size="params.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="userData.total"
-      >
-      </el-pagination>
+      ></el-pagination>
     </el-card>
     <!-- 增加用户 dialog -->
     <el-dialog
@@ -112,12 +89,7 @@
       :show-close="false"
       :destroy-on-close="true"
     >
-      <el-form
-        :model="addFormData"
-        :rules="addRules"
-        ref="addFormRef"
-        label-width="80px"
-      >
+      <el-form :model="addFormData" :rules="addRules" ref="addFormRef" label-width="80px">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addFormData.username"></el-input>
         </el-form-item>
@@ -139,13 +111,8 @@
     </el-dialog>
 
     <!-- 编辑用户 dialog -->
-    <el-dialog title="编辑用户" :visible="isShowEditForm" width="40%">
-      <el-form
-        :model="editFormData"
-        :rules="addRules"
-        ref="editFormRef"
-        label-width="80px"
-      >
+    <el-dialog title="编辑用户" :visible.sync="isShowEditForm" width="40%">
+      <el-form :model="editFormData" :rules="addRules" ref="editFormRef" label-width="80px">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editFormData.username" disabled></el-input>
         </el-form-item>
@@ -159,6 +126,34 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancelEditUser">取 消</el-button>
         <el-button type="primary" @click="editUser">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 分配角色 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="isShowSetRoleDialog"
+      width="50%"
+      @close="setRoleDialogClosed"
+    >
+      <div style="fontWeight: 600;fontSize : 16px">
+        <p>当前用户: {{ curUser.username }}</p>
+        <p>当前角色: {{ curUser.role_name }}</p>
+        <p>
+          分配新角色:
+          <el-select v-model="selectRole" placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isShowSetRoleDialog = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -247,7 +242,14 @@ export default {
         username: "",
         email: "",
         mobile: ""
-      }
+      },
+      isShowSetRoleDialog: false,
+      //当前用户
+      curUser: {},
+      //  角色列表
+      roleList: [],
+      // 当前选中角色id值
+      selectRole: ""
     };
   },
   created() {
@@ -324,7 +326,7 @@ export default {
       for (let prop in this.editFormData) {
         this.editFormData[prop] = data[prop];
       }
-        // this.editFormData = data;
+      // this.editFormData = data;
 
       this.isShowEditForm = true;
     },
@@ -360,13 +362,13 @@ export default {
     async deleteHandel(id) {
       //等待用户确认删除信息
       const result = await this.$messageBox
-      //确认返回 'confirm'
+        //确认返回 'confirm'
         .confirm("此操作将永久删除该用户, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
-        .catch(res => res);// 取消返回'cancel'
+        .catch(res => res); // 取消返回'cancel'
 
       if (result == "confirm") {
         //用户确认删除
@@ -384,6 +386,52 @@ export default {
         //用户取消删除
         this.$message.info("已取消删除");
       }
+    },
+
+    //分配角色按钮监听
+    setRolebtn(data) {
+      console.log(data);
+      this.curUser = data;
+
+      //获取所有角色列表
+      this.$http
+        .rolesList()
+        .then(({ data: res }) => {
+          if (res.meta.status == 200) {
+            console.log(res.data);
+            this.roleList = res.data;
+          }
+        })
+        .catch(eer => eer);
+      this.isShowSetRoleDialog = true;
+    },
+
+    //角色选择框关闭  监听
+    setRoleDialogClosed() {
+      this.selectRole = "";
+      this.roleList = {};
+    },
+
+    //  分配角色 跟新数据
+    saveRoleInfo() {
+      if (!this.selectRole) {
+        return;
+      }
+      const { id } = this.curUser;
+      this.$http
+        .saveRole(id, this.selectRole)
+        .then(({ data: res }) => {
+          console.log(res);
+          if (res.meta.status == 200) {
+            this.$message.success(res.meta.msg);
+              this.getUserList();
+          } else {
+            this.$message.info(res.meta.msg);
+          }
+
+          this.isShowSetRoleDialog = false;
+        })
+        .catch(err => err);
     }
   }
 };

@@ -1,16 +1,16 @@
 import axios from "axios";
 
-let Request = axios.create({
-  baseURL: "http://127.0.0.1:8888/api/private/v1",
-  headers: {
-    Authorization: window.sessionStorage.getItem("token")
-  }
+// 请求拦截器
+axios.interceptors.request.use(config => {
+  config.baseURL = "http://127.0.0.1:8888/api/private/v1";
+  config.headers.Authorization = sessionStorage.getItem("token");
+  return config;
 });
 
 export default {
   //页面登录
   login(option) {
-    return Request({
+    return axios({
       url: "/login",
       method: "POST",
       data: {
@@ -21,7 +21,7 @@ export default {
 
   //获取左侧菜单数据;
   getMenuList() {
-    return Request({
+    return axios({
       url: "/menus",
       method: "GET"
     });
@@ -29,7 +29,7 @@ export default {
 
   //获取用户列表;
   userlist(option) {
-    return Request({
+    return axios({
       url: "/users",
       method: "GET",
       params: {
@@ -40,7 +40,7 @@ export default {
 
   //获取用户列表;
   userstate({ uId, type }) {
-    return Request({
+    return axios({
       url: `/users/${uId}/state/${type}`,
       method: "PUT"
     });
@@ -48,7 +48,7 @@ export default {
 
   // 添加用户
   adduser(option) {
-    return Request({
+    return axios({
       url: "/users",
       method: "POST",
       data: {
@@ -58,8 +58,8 @@ export default {
   },
 
   //编辑用户
-  edituser ({ id, email, mobile }) {
-    return Request({
+  edituser({ id, email, mobile }) {
+    return axios({
       url: `/users/${id}`,
       method: "PUT",
       data: {
@@ -71,63 +71,97 @@ export default {
 
   //删除用户
   deleteuser(uId) {
-    return Request({
+    return axios({
       url: `/users/${uId}`,
       method: "DELETE"
     });
   },
 
-  //获取用户权限
-  rightslist(type) {
+  /**
+   * 分配用户角色
+   */
+  saveRole(id,rid) { 
+    return axios({
+      url: `/users/${id}/role`,
+      method: 'PUT',
+      data: {
+        id,
+        rid,
+      }
+    })
+
+
+  },
+
+
+
+  //获取所有权限列表 type = list / tree
+  rightsList(type) {
     // return axios.get(`/rights/${type}`);
-    return Request({
+    return axios({
       url: `/rights/${type}`,
       method: "GET"
     });
-  }
+  },
+
+  //获取角色列表
+  rolesList() {
+    return axios({
+      url: "/roles",
+      method: "GET"
+    });
+  },
+
+  //添加角色
+  addRoles ({ roleName, roleDesc }) {
+    console.log(roleName, roleDesc);
+    return axios({
+      url: "/roles",
+      method: "POST",
+      data: {
+        roleName,
+        roleDesc
+      }
+    });
+  },
+
+  //编辑角色
+  editRoles ({ id, roleName, roleDesc }) {
+    return axios({
+      url: `/roles/${id}`,
+      method: "PUT",
+      data: {
+        roleName,
+        roleDesc
+      }
+    });
+  },
+
+  //删除角色
+  deleRoles (id) {
+    return axios({
+      url: `/roles/${id}`,
+      method:'DELETE'
+    })
+  },
+
+  //特定权限移除
+  removeRights (roleId,id) {
+    return axios({
+      url: `/roles/${roleId}/rights/${id}`,
+      method:'DELETE'
+    })
+  },
+
+  //角色授权
+  setRoleRights (roleId,rids) {
+    return axios({
+      url: `/roles/${roleId}/rights`,
+      method: 'POST',
+      data: {
+        rids
+      }
+    })
+  },
+  
 };
-
-// let API = {
-//   //  页面 登录
-//   login(params) {
-//     return axios.post("/login", params);
-//   },
-
-//   //获取左侧菜单数据;
-//   getMenuList() {
-//     return axios.get("/menus");
-//   },
-
-//   //获取用户列表;
-//   userlist(params) {
-//     return axios.get("/users", { params });
-//   },
-
-//   //更新用户状态
-
-//   userstate({ uId, type }) {
-//     return axios.put(`users/${uId}/state/${type}`);
-//   },
-
-//   // 添加用户
-//   adduser(params) {
-//     return axios.post("/users", params);
-//   },
-
-//   //编辑用户
-//   edituser({ id, email, mobile }) {
-//     return axios.put(`/users/${id}`, { email, mobile });
-//   },
-
-//   //删除用户
-//   deleteuser(id) {
-//     return axios.delete(`/users/${id}`);
-//   },
-
-//   //获取权限列表
-//   rightslist(type) {
-//     return axios.get(`/rights/${type}`);
-//   }
-// };
-
-// export default API;

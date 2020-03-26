@@ -9,12 +9,15 @@
 
     <!-- 卡片区域 -->
     <el-card class="card-box">
-      <el-table height="80vh" :data="rightsData" :border="true" :stripe="true">
+      <el-table height="80vh" :data="rolesData" :border="true" :stripe="true">
         <el-table-column type="index" label="#"> </el-table-column>
-        <el-table-column prop="authName" label="权限管理"></el-table-column>
-        <el-table-column prop="path" label="路径"></el-table-column>
-        <el-table-column prop="level" label="权限等级
-        ">
+        <el-table-column prop="roleName" label="角色名称"></el-table-column>
+        <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
+        <el-table-column
+          prop="level"
+          label="权限等级
+        "
+        >
           <template slot-scope="data">
             <el-tag type="success" v-if="data.row.level === '0'">一级</el-tag>
             <el-tag type="warning" v-else-if="data.row.level === '1'"
@@ -31,23 +34,22 @@
 <script>
 export default {
   created() {
-    this.getRightsList();
+    this.getRolesList();
   },
   data() {
     return {
-      //权限列表数据
-      rightsData: []
+      //角色列表数据
+      rolesData: []
     };
   },
   methods: {
-      //获取权限列表数据
+    //获取权限列表数据
 
-    async getRightsList() {
-      const { data: res } = await this.$http.rightslist("list");
-      console.log(res);
+    async getRolesList() {
+      const { data: res } = await this.$http.rolesList("list");
+      // console.log(res);
       if (res.meta.status == 200) {
-
-        this.rightsData = res.data;
+        this.rolesData = res.data;
       } else {
         this.$message.info(res.meta.msg);
       }

@@ -13,6 +13,8 @@ import './assets/css/global.css'
 //请求接口api导入
 import API from './API/API.js'
 
+
+
 Vue.prototype.$http = API;
 
 
