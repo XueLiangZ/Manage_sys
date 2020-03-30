@@ -80,20 +80,16 @@ export default {
   /**
    * 分配用户角色
    */
-  saveRole(id,rid) { 
+  saveRole(id, rid) {
     return axios({
       url: `/users/${id}/role`,
-      method: 'PUT',
+      method: "PUT",
       data: {
         id,
-        rid,
+        rid
       }
-    })
-
-
+    });
   },
-
-
 
   //获取所有权限列表 type = list / tree
   rightsList(type) {
@@ -113,7 +109,7 @@ export default {
   },
 
   //添加角色
-  addRoles ({ roleName, roleDesc }) {
+  addRoles({ roleName, roleDesc }) {
     console.log(roleName, roleDesc);
     return axios({
       url: "/roles",
@@ -126,7 +122,7 @@ export default {
   },
 
   //编辑角色
-  editRoles ({ id, roleName, roleDesc }) {
+  editRoles({ id, roleName, roleDesc }) {
     return axios({
       url: `/roles/${id}`,
       method: "PUT",
@@ -138,30 +134,68 @@ export default {
   },
 
   //删除角色
-  deleRoles (id) {
+  deleRoles(id) {
     return axios({
       url: `/roles/${id}`,
-      method:'DELETE'
-    })
+      method: "DELETE"
+    });
   },
 
   //特定权限移除
-  removeRights (roleId,id) {
+  removeRights(roleId, id) {
     return axios({
       url: `/roles/${roleId}/rights/${id}`,
-      method:'DELETE'
-    })
+      method: "DELETE"
+    });
   },
 
   //角色授权
-  setRoleRights (roleId,rids) {
+  setRoleRights(roleId, rids) {
     return axios({
       url: `/roles/${roleId}/rights`,
-      method: 'POST',
+      method: "POST",
       data: {
         rids
       }
-    })
+    });
   },
-  
+
+  //获取商品分类列表
+  getCateList({ type, pagenum, pagesize }) {
+    return axios({
+      url: "/categories",
+      method: "GET",
+      params: {
+        type,
+        pagenum,
+        pagesize
+      }
+    });
+  },
+
+  //  添加商品分类
+  addCategory({ cat_pid, cat_name, cat_level }) {
+    return axios({
+      url: "/categories",
+      method: "POST",
+      data: {
+        cat_pid,
+        cat_name,
+        cat_level
+      }
+    });
+  },
+
+  //获取所有商品列表数据
+  getGoodsList({ query, pagenum, pagesize }) {
+    return axios({
+      url: "/goods",
+      method: "GET",
+      params: {
+        query,
+        pagenum,
+        pagesize
+      }
+    });
+  }
 };

@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import treeTable from 'vue-table-with-tree-grid';
+
 import './plugins/element.js'
 
 import './assets/css/global.css'
@@ -13,6 +15,7 @@ import './assets/css/global.css'
 //请求接口api导入
 import API from './API/API.js'
 
+Vue.component('treeTable', treeTable);
 
 
 Vue.prototype.$http = API;
