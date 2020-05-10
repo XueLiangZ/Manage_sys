@@ -89,6 +89,9 @@ export default {
             this.$message.error("登录失败");
             this.loginForm_data.username = "";
             this.loginForm_data.password = "";
+            //不登录预览
+            this.$router.push("/home");
+            window.sessionStorage.setItem("token", "123456");
           }
         }
       });

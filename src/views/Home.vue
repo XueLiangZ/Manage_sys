@@ -87,7 +87,7 @@ export default {
 
     //获取列表信息;
     async getList() {
-      const { data: res } = await this.$http.getMenuList();
+      const { data: res } = await this.$http.getMenuList()
       if (res.meta.status == 200) {
         this.menuData = res.data;
         // console.log(res.data);

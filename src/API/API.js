@@ -161,7 +161,7 @@ export default {
   },
 
   //获取商品分类列表
-  getCateList({ type, pagenum, pagesize }) {
+  getCateList({ type = null, pagenum = null, pagesize = null }) {
     return axios({
       url: "/categories",
       method: "GET",
@@ -170,6 +170,14 @@ export default {
         pagenum,
         pagesize
       }
+    });
+  },
+  //获取所有商品分类
+
+  getAllCateList() {
+    return axios({
+      url: "/categories",
+      method: "GET",
     });
   },
 

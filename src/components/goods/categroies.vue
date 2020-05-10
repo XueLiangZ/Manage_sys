@@ -107,6 +107,7 @@
           <el-input v-model="cateDate.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="分类父级:">
+          <!-- 联级选择框 -->
           <el-cascader
             :options="parentCateList"
             :props="cascaderProps"
