@@ -1,3 +1,6 @@
+### 启动项目前需要先加载，运行mysql数据库 ： https://github.com/XueLiangZ/Manage_server
+
+
 # vue_shop
 
 ## Project setup
